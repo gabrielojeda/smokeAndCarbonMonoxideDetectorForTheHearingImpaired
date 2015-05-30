@@ -32,9 +32,8 @@
 #define WLAN_SECURITY   WLAN_SEC_WPA2      
 
 /* CC3000 Instances */
-Adafruit_CC3000 cc3000 = Adafruit_CC3000(ADAFRUIT_CC3000_CS, ADAFRUIT_CC3000_IRQ, ADAFRUIT_CC3000_VBAT,
-                                         SPI_CLOCK_DIV2);
-                                         
+Adafruit_CC3000 cc3000 = Adafruit_CC3000(ADAFRUIT_CC3000_CS, ADAFRUIT_CC3000_IRQ, ADAFRUIT_CC3000_VBAT, SPI_CLOCK_DIV2);
+
 /* Local Server IP address, Webserver Port, and Server Repository */
 uint32_t ip = cc3000.IP2U32(192,168,1,5);      //Computer IP address
 int port = 80;                                 //Webserver port
@@ -98,7 +97,6 @@ void loop(void)
   {
     if((smokeValue > smokeThreshold) && (coValue > coThreshold))
     {
-      
       /* Send request */
       String request = "GET "+ repository + "sensor.php?both=" + bothDetectedMessage + " HTTP/1.0";
       send_request(request);
@@ -110,54 +108,51 @@ void loop(void)
       delay(3000);    //Update every 3 seconds
       
       initialFlag = 0; 
-     }
-     
-     else if(smokeValue > smokeThreshold)
-     {                                                     
-      
-       /* Send request */
-       String request = "GET "+ repository + "sensor.php?temp=" + smokeDetectedMessage + " HTTP/1.0";
-       send_request(request);
-       Serial.println("");
-       Serial.print("request: ");
-       Serial.println(request);
-       Serial.println("");
-       
-       delay(3000);    //Update every 3 seconds
+    }
     
-       initialFlag = 0;
-     }
+    else if(smokeValue > smokeThreshold)
+    {                                                     
+      /* Send request */
+      String request = "GET "+ repository + "sensor.php?temp=" + smokeDetectedMessage + " HTTP/1.0";
+      send_request(request);
+      Serial.println("");
+      Serial.print("request: ");
+      Serial.println(request);
+      Serial.println("");
+       
+      delay(3000);    //Update every 3 seconds
     
-     else if(coValue > coThreshold)
-     {
+      initialFlag = 0;
+    }
+    
+    else if(coValue > coThreshold)
+    {
+      /* Send request */
+      String request = "GET "+ repository + "sensor.php?hum=" + coDetectedMessage + " HTTP/1.0";
+      send_request(request);
+      Serial.println("");
+      Serial.print("request: ");
+      Serial.println(request);
+      Serial.println("");
        
-       /* Send request */
-       String request = "GET "+ repository + "sensor.php?hum=" + coDetectedMessage + " HTTP/1.0";
-       send_request(request);
-       Serial.println("");
-       Serial.print("request: ");
-       Serial.println(request);
-       Serial.println("");
+      delay(3000);    // Update every 3 seconds
        
-       delay(3000);    // Update every 3 seconds
-       
-       initialFlag = 0;
-     }
+      initialFlag = 0;
+    }
      
-     if (finalFlag && !initialFlag)
-     {
-      
-       /* Send request */
-       String request = "GET "+ repository + "sensor.php?temp=" + initialValue + " HTTP/1.0";
-       send_request(request);
-       Serial.println("");
-       Serial.print("request: ");
-       Serial.println(request);
-       Serial.println("");
-      
-       finalFlag = 0;
-     }
-   }
+    if (finalFlag && !initialFlag)
+    {
+      /* Send request */
+      String request = "GET "+ repository + "sensor.php?temp=" + initialValue + " HTTP/1.0";
+      send_request(request);
+      Serial.println("");
+      Serial.print("request: ");
+      Serial.println(request);
+      Serial.println("");
+  
+      finalFlag = 0;
+    }
+  }
 }
 
 /* Function to Send a TCP Request and Get the Result as a String */
